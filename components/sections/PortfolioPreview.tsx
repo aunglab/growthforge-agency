@@ -1,12 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { portfolioProjects } from "@/lib/data/portfolio";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { getFeaturedPortfolioProjects } from "@/lib/server/portfolio";
 
-export function PortfolioPreview() {
-  const featured = portfolioProjects.filter((item) => item.isFeatured).slice(0, 3);
+export async function PortfolioPreview() {
+  const featured = await getFeaturedPortfolioProjects(3);
 
   return (
     <section className="section-spacing">

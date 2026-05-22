@@ -4,7 +4,8 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { PortfolioGrid } from "@/components/portfolio/PortfolioGrid";
 import { Button } from "@/components/ui/button";
-import { portfolioCategories, portfolioProjects } from "@/lib/data/portfolio";
+import { portfolioCategories } from "@/lib/data/portfolio";
+import { getPortfolioProjects } from "@/lib/server/portfolio";
 
 export const metadata: Metadata = {
   title: "Video Portfolio & Sample Projects",
@@ -28,7 +29,9 @@ export const metadata: Metadata = {
   }
 };
 
-export default function WorkPage() {
+export default async function WorkPage() {
+  const portfolioProjects = await getPortfolioProjects();
+
   return (
     <>
       <Navbar />

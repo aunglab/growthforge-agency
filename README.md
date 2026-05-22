@@ -50,7 +50,8 @@ It includes:
   - Portfolio grid
   - Load more
   - Video modal (loads video only after click)
-- `/admin` placeholder page
+- Protected `/admin` dashboard with login session
+- Portfolio project add/edit/delete UI in admin
 - `/api/contact` route with:
   - POST handling
   - Zod validation
@@ -107,12 +108,20 @@ RESEND_API_KEY=your_resend_api_key
 LEAD_NOTIFICATION_EMAIL=your_notification_email@example.com
 ```
 
+For private admin access, also set:
+
+```env
+ADMIN_EMAIL=you@example.com
+ADMIN_PASSWORD=your_strong_password
+ADMIN_SESSION_SECRET=a_long_random_secret_value
+```
+
 Contact submissions are saved to DB first.  
 If email fails after DB save, the API still returns a safe success message.
 
 ## 10) Cloudinary Video Hosting (How It Works)
 
-Video files should be hosted in Cloudinary and referenced by URL in portfolio data.
+Video files should be hosted in Cloudinary and referenced by URL in your `VideoProject` table.
 
 - Store thumbnails as `thumbnailUrl`
 - Store playable video URLs as `videoUrl`
@@ -129,30 +138,39 @@ Video files should be hosted in Cloudinary and referenced by URL in portfolio da
 
 1. Upload videos/thumbnails in Cloudinary dashboard.
 2. Copy secure URLs.
-3. Update portfolio data entries in `lib/data/portfolio.ts`.
+3. Add or update rows in Neon table `VideoProject` with those URLs.
 
 No public user video upload is implemented in version 1.
 
 ## 13) Replace `thumbnailUrl` and `videoUrl`
 
-Edit:
-
-- `lib/data/portfolio.ts`
-
-For each item, replace:
+Open Neon -> Tables -> `VideoProject`, then edit:
 
 - `thumbnailUrl`
 - `videoUrl`
 
-with your actual Cloudinary URLs.
+Your `/work` page and homepage portfolio preview will update automatically after deploy.
 
 ## 14) Add More Video Projects
 
-Add new objects to the `portfolioProjects` array in:
+Add a new row to Neon table `VideoProject` with:
 
-- `lib/data/portfolio.ts`
+- `title` (text)
+- `slug` (unique text)
+- `category` (use one of: Short-form Ads, Restaurant Videos, Real Estate Videos, Product Videos, Personal Brand Videos, Before / After Edits, Website Projects, Automation Projects)
+- `industry` (optional)
+- `serviceType`
+- `description`
+- `thumbnailUrl` (Cloudinary image URL)
+- `videoUrl` (Cloudinary video URL)
+- `cloudinaryPublicId` (optional)
+- `duration` (optional, e.g. `00:35`)
+- `tags` (text array, e.g. `{"Sample Project","Demo Edit"}`)
+- `isFeatured` (`true` or `false`)
+- `sortOrder` (number)
 
-The UI (`/work` page and homepage preview) will update automatically.
+The UI (`/work` and homepage portfolio preview) reads from DB automatically.  
+If DB has no portfolio rows yet, the app safely falls back to local sample data.
 
 ## 15) Deploy to Vercel
 
@@ -178,7 +196,8 @@ npm run build
 - Keep dependencies updated.
 - Review security headers/CSP after adding third-party scripts.
 - Add proper rate limiting before scaling traffic.
-- Add authentication and authorization before building a real admin dashboard.
+- Admin dashboard routes are protected by signed httpOnly session cookies.
+- Use a long random `ADMIN_SESSION_SECRET` and strong `ADMIN_PASSWORD`.
 - Do not allow public video uploads.
 - Rotate secrets immediately if they are ever exposed.
 - Contact form includes frontend + backend validation and honeypot bot check.
@@ -189,7 +208,6 @@ Before scale, add IP/user-agent based rate limiting for `/api/contact` (Redis or
 
 ## 17) Future Improvements
 
-- Protected admin dashboard
 - Lead management CRM workflow
 - Blog/CMS
 - Booking system
@@ -210,48 +228,18 @@ npx prisma migrate dev
 npm run build
 ```
 
-## Admin Placeholder Notes
+## Admin Dashboard Notes
 
-Current `/admin` is intentionally a placeholder.  
-Future admin will support:
+Current `/admin` supports:
 
-- Viewing leads
-- Changing lead status
-- Adding new video projects
-- Editing video metadata
-- Marking videos as featured
-- Changing sort order
-- Hiding/showing projects
-- Secure Cloudinary uploads from protected admin only
+- Login session via `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET`
+- Add/edit/delete portfolio projects in UI
+- Featured toggle and sort order control
+- Protected admin API routes under `/api/admin/*`
 
-## Future Admin Dashboard Plan
+Planned next expansions:
 
-The project is intentionally structured so admin capabilities can be added without rewriting the
-public website.
-
-### Planned Admin Scope
-
-- Login/authentication
-- Authorization (admin role checks)
-- View leads
-- Change lead status
-- Search and filter leads
-- View lead details
-- Add/edit/delete portfolio projects
-- Mark projects as featured
-- Secure Cloudinary uploads from admin-only area
-- Manage testimonials
-- Manage FAQs
-- Manage blog posts
-- View basic analytics
-
-### Important Security Requirement
-
-Authentication and authorization must be fully implemented **before** exposing private lead data or
-admin mutation routes.
-
-### Current Foundation Already Added
-
-- `lib/admin/types.ts` for shared admin-facing domain types.
-- `lib/server/admin/contracts.ts` for future repository/auth contracts.
-- `/admin` remains a non-functional placeholder page with no private data exposure.
+- Lead inbox and status updates
+- Secure Cloudinary uploads directly from admin
+- Content modules (testimonials/FAQ/blog)
+- Multi-user roles and permissions
