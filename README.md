@@ -119,12 +119,12 @@ ADMIN_SESSION_SECRET=a_long_random_secret_value
 Contact submissions are saved to DB first.  
 If email fails after DB save, the API still returns a safe success message.
 
-## 10) Cloudinary Video Hosting (How It Works)
+## 10) Video Hosting (Cloudinary or YouTube)
 
-Video files should be hosted in Cloudinary and referenced by URL in your `VideoProject` table.
+Video files can be hosted in Cloudinary **or** YouTube and referenced in your `VideoProject` table.
 
 - Store thumbnails as `thumbnailUrl`
-- Store playable video URLs as `videoUrl`
+- Store playable video URLs as `videoUrl` (direct MP4 URL or YouTube URL)
 - Optional Cloudinary metadata can later be stored in Prisma (`cloudinaryPublicId`)
 
 ## 11) Why Videos Should Not Be Stored in This Project Folder
@@ -134,11 +134,17 @@ Video files should be hosted in Cloudinary and referenced by URL in your `VideoP
 - Improves performance via CDN delivery
 - Easier replacement and scaling of portfolio assets
 
-## 12) Manual Cloudinary Upload (Version 1)
+## 12) Manual Upload (Version 1)
 
+Cloudinary flow:
 1. Upload videos/thumbnails in Cloudinary dashboard.
 2. Copy secure URLs.
 3. Add or update rows in Neon table `VideoProject` with those URLs.
+
+YouTube flow:
+1. Upload videos to YouTube as **Unlisted**.
+2. Copy the YouTube watch/share URL and use it for `videoUrl`.
+3. Use a thumbnail URL (`thumbnailUrl`) from your own image or YouTube thumbnail.
 
 No public user video upload is implemented in version 1.
 
@@ -161,8 +167,8 @@ Add a new row to Neon table `VideoProject` with:
 - `industry` (optional)
 - `serviceType`
 - `description`
-- `thumbnailUrl` (Cloudinary image URL)
-- `videoUrl` (Cloudinary video URL)
+- `thumbnailUrl` (Cloudinary, YouTube thumbnail, or other public image URL)
+- `videoUrl` (direct MP4 URL or YouTube URL)
 - `cloudinaryPublicId` (optional)
 - `duration` (optional, e.g. `00:35`)
 - `tags` (text array, e.g. `{"Sample Project","Demo Edit"}`)

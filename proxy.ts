@@ -11,7 +11,7 @@ function unauthorizedApiResponse() {
   return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const sessionToken = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
   const session = sessionToken ? await verifyAdminSessionToken(sessionToken) : null;

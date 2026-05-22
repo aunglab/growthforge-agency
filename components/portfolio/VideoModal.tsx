@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 import { PortfolioProject } from "@/lib/data/portfolio";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { getYouTubeEmbedUrl } from "@/lib/utils/video-url";
 
 type VideoModalProps = {
   project: PortfolioProject | null;
@@ -25,6 +26,8 @@ export function VideoModal({ project, onClose }: VideoModalProps) {
   }, [project, onClose]);
 
   if (!project) return null;
+  const youtubeEmbedUrl = getYouTubeEmbedUrl(project.videoUrl);
+  const hasPlayableVideo = Boolean(project.videoUrl?.trim());
 
   return (
     <div
@@ -56,10 +59,22 @@ export function VideoModal({ project, onClose }: VideoModalProps) {
         </div>
 
         <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
-          {project.duration === "N/A" ? (
+          {!hasPlayableVideo ? (
             <div className="flex h-64 items-center justify-center p-6 text-center text-sm text-slate-600">
-              This project currently uses a placeholder URL. Replace it with a Cloudinary video
-              to preview directly in the modal.
+              Add a YouTube or MP4 video URL in admin to preview this project directly in the
+              modal.
+            </div>
+          ) : youtubeEmbedUrl ? (
+            <div className="aspect-video w-full">
+              <iframe
+                src={youtubeEmbedUrl}
+                title={`${project.title} video preview`}
+                className="h-full w-full"
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
             </div>
           ) : (
             <video

@@ -8,11 +8,11 @@ const csp = [
   "default-src 'self'",
   isDev ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'" : "script-src 'self' 'unsafe-inline'",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://res.cloudinary.com",
+  "img-src 'self' data: blob: https://res.cloudinary.com https://img.youtube.com https://i.ytimg.com",
   "font-src 'self' data:",
   "connect-src 'self' https://api.resend.com https://res.cloudinary.com",
   "media-src 'self' blob: https://res.cloudinary.com",
-  "frame-src 'self' https://res.cloudinary.com",
+  "frame-src 'self' https://res.cloudinary.com https://www.youtube.com https://www.youtube-nocookie.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -26,6 +26,14 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "res.cloudinary.com"
+      },
+      {
+        protocol: "https",
+        hostname: "img.youtube.com"
+      },
+      {
+        protocol: "https",
+        hostname: "i.ytimg.com"
       }
     ]
   },
