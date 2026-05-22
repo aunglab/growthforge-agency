@@ -70,7 +70,7 @@ export async function POST(request: Request) {
         businessType: normalizeOptional(form.businessType ?? undefined),
         serviceInterested: form.serviceInterested,
         budgetRange: normalizeOptional(form.budgetRange ?? undefined),
-        message: form.message
+        message: normalizeOptional(form.message ?? undefined)
       }
     });
 
@@ -93,7 +93,7 @@ export async function POST(request: Request) {
             `Business type: ${lead.businessType ?? "N/A"}`,
             `Service interested: ${lead.serviceInterested}`,
             `Budget range: ${lead.budgetRange ?? "N/A"}`,
-            `Message: ${lead.message}`
+            `Message: ${lead.message ?? "N/A"}`
           ].join("\n")
         });
       } catch {

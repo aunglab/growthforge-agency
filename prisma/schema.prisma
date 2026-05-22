@@ -16,7 +16,7 @@ model Lead {
   businessType      String?
   serviceInterested String
   budgetRange       String?
-  message           String
+  message           String?
   source            String   @default("website")
   status            String   @default("new")
   createdAt         DateTime @default(now())

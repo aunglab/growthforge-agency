@@ -64,7 +64,7 @@ export function Contact() {
   }>({ type: "idle", message: "" });
   const [loading, setLoading] = useState(false);
 
-  const charCount = form.message.length;
+  const charCount = form.message?.length ?? 0;
 
   const setValue = (key: keyof FormState, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -129,7 +129,7 @@ export function Contact() {
             review your context and suggest the most practical next move.
           </p>
           <p className="mt-2 text-sm text-slate-400">
-            Quick form: only name, email, service, and message are required.
+            Quick form: only name, email, and service are required.
           </p>
           <div className="mt-6 space-y-3">
             {contactTrustPoints.map((point) => (
@@ -303,13 +303,14 @@ export function Contact() {
                   onChange={(e) => setValue("message", e.target.value)}
                   maxLength={2000}
                   className="border-slate-600 bg-slate-900 text-white"
-                  required
                 />
                 <div className="mt-1 flex items-center justify-between">
                   {errors.message ? (
                     <p className="text-xs text-red-300">{errors.message}</p>
                   ) : (
-                    <span className="text-xs text-slate-300">Minimum 10 characters.</span>
+                    <span className="text-xs text-slate-300">
+                      Optional. Share details if you want a more tailored recommendation.
+                    </span>
                   )}
                   <span className="text-xs text-slate-300">{charCount}/2000</span>
                 </div>

@@ -28,11 +28,7 @@ export const contactSchema = z.object({
     .min(1, "Please select a service.")
     .max(100, "Service selection is too long."),
   budgetRange: optionalTrimmedString(50),
-  message: z
-    .string()
-    .trim()
-    .min(10, "Message must be at least 10 characters.")
-    .max(2000, "Message must be 2000 characters or less."),
+  message: optionalTrimmedString(2000),
   honeypot: z.string().optional().default("")
 }).strict();
 
